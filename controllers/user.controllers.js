@@ -96,19 +96,20 @@ const loginUser = async (req, res) => {
 // Update
 const updateUser = async (req, res) => {
   try {
-    const { name, password, mobileNo } = req.body;
+    const { name, email, password, mobileNo } = req.body;
 
-    const userId = req.user._id;
+    const userId = req.user.id;
 
     const updateDetails = {};
 
     // Sanitize and validate fields before updating
+    if (email) return res.send("Email can not be updated");
     if (name) updateDetails.name = name.trim();
     if (password) {
       const salt = await bcrypt.genSalt(10);
       updateDetails.password = await bcrypt.hash(password.trim(), salt);
     }
-    if (mobileNo) updateDetails.mobileNo = mobileNo.trim();
+    if (mobileNo) updateDetails.mobileNo = mobileNo;
 
     // Update the user and return a new Document
     const user = await User.findByIdAndUpdate(userId, updateDetails, {
@@ -116,9 +117,9 @@ const updateUser = async (req, res) => {
       runValidators: true, // Enforces Schema validation
     }).select("-password"); // Excludes password from response
 
-    // if (!user) {
-    //   res.status(404).json({ msg: "User not found" });
-    // }
+    if (!user) {
+      res.status(404).json({ msg: "User not found" });
+    }
 
     res.json({ msg: "User updated successfully" });
   } catch (error) {
