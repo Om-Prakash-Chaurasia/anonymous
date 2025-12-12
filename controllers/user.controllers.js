@@ -128,4 +128,22 @@ const updateUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, updateUser };
+// Delete
+const deleteUser = async (req, res) => {
+  try {
+    const userId = req.user.id;
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ msg: "User not found" });
+    }
+
+    await User.findByIdAndDelete(userId);
+    res.status(200).json({ msg: "User deleted successfully" });
+  } catch (error) {
+    console.error("Delete request error : ", error);
+    res.status(500).json({ msg: "Internal server error : ", error });
+  }
+};
+
+module.exports = { registerUser, loginUser, updateUser, deleteUser };

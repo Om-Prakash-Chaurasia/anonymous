@@ -14,6 +14,7 @@ router.post("/login", userController.loginUser);
 router.post("/update", auth, userController.updateUser);
 
 // Delete User
+router.delete("/delete", auth, userController.deleteUser);
 
 // Forgot Password
 

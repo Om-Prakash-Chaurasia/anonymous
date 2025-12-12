@@ -14,7 +14,6 @@ const auth = async (req, res, next) => {
 
     // Find user by ID and exclude password
     const user = await User.findById(decoded.id).select("-password");
-    console.log(user);
 
     if (!user) {
       return res.status(404).json({ msg: "User not found" });
